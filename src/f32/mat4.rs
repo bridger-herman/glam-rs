@@ -625,6 +625,28 @@ impl Mat4 {
             && self.z_axis.abs_diff_eq(other.z_axis, max_abs_diff)
             && self.w_axis.abs_diff_eq(other.w_axis, max_abs_diff)
     }
+
+    #[inline]
+    pub fn to_flat_vec(&self) -> Vec<f32> {
+        vec![
+            self.x_axis.x(),
+            self.x_axis.y(),
+            self.x_axis.z(),
+            self.x_axis.w(),
+            self.y_axis.x(),
+            self.y_axis.y(),
+            self.y_axis.z(),
+            self.y_axis.w(),
+            self.z_axis.x(),
+            self.z_axis.y(),
+            self.z_axis.z(),
+            self.z_axis.w(),
+            self.w_axis.x(),
+            self.w_axis.y(),
+            self.w_axis.z(),
+            self.w_axis.w(),
+        ]
+    }
 }
 
 #[cfg(feature = "rand")]
@@ -634,6 +656,30 @@ impl Distribution<Mat4> for Standard {
         Mat4::from_cols_array(&rng.gen())
     }
 }
+
+// impl AsRef<Vec<f32>> for Mat4 {
+    // #[inline]
+    // fn as_ref(&self) -> &Vec<f32> {
+        // &vec![
+            // self.x_axis.x(),
+            // self.x_axis.y(),
+            // self.x_axis.z(),
+            // self.x_axis.w(),
+            // self.y_axis.x(),
+            // self.y_axis.y(),
+            // self.y_axis.z(),
+            // self.y_axis.w(),
+            // self.z_axis.x(),
+            // self.z_axis.y(),
+            // self.z_axis.z(),
+            // self.z_axis.w(),
+            // self.w_axis.x(),
+            // self.w_axis.y(),
+            // self.w_axis.z(),
+            // self.w_axis.w(),
+        // ]
+    // }
+// }
 
 // impl AsRef<[f32; 16]> for Mat4 {
     // #[inline]

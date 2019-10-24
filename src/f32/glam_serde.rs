@@ -117,8 +117,8 @@ impl Serialize for Mat4 {
         S: Serializer,
     {
         let mut state = serializer.serialize_tuple_struct("Mat4", 16)?;
-        for f in self.as_ref() {
-            state.serialize_field(f)?;
+        for f in self.to_flat_vec() {
+            state.serialize_field(&f)?;
         }
         state.end()
     }
