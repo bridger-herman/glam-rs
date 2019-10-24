@@ -2,7 +2,7 @@
 name = "glam"
 version = "0.8.0" # remember to update html_root_url
 edition = "2018"
-authors = ["Cameron Hart <cameron.hart@gmail.com>"]
+authors = ["Cameron Hart <cameron.hart@gmail.com>", "Bridger Herman <herma582@umn.edu>"]
 description = "A simple and fast 3D math library for games and graphics"
 repository = "https://github.com/bitshifter/glam-rs"
 readme = "README.md"
@@ -30,6 +30,7 @@ scalar-math = []
 transform-types = []
 
 [dependencies]
+wasm-bindgen = "0.2.51"
 mint = { version = "0.5", optional = true, default-features = false  }
 rand = { version = "0.7", optional = true, default-features = false }
 serde = { version = "1.0", optional = true, features = ["derive"] }

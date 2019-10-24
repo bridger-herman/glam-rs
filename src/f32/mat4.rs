@@ -1,5 +1,7 @@
 use super::{scalar_sin_cos, Quat, Vec3, Vec4};
 
+use wasm_bindgen::prelude::*;
+
 #[cfg(feature = "rand")]
 use rand::{
     distributions::{Distribution, Standard},
@@ -47,6 +49,7 @@ fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
 /// A 4x4 column major matrix.
 ///
 /// This type is 16 byte aligned.
+#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct Mat4 {
     pub(crate) x_axis: Vec4,
@@ -72,6 +75,7 @@ impl fmt::Display for Mat4 {
     }
 }
 
+#[wasm_bindgen]
 impl Mat4 {
     /// Creates a new `Mat4` with all elements set to `0.0`.
     #[inline]
@@ -114,46 +118,46 @@ impl Mat4 {
 
     /// Creates a new `Mat4` from a `[f32; 16]` stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the resulting `Mat4`.
-    #[inline]
-    pub fn from_cols_array(m: &[f32; 16]) -> Self {
-        Mat4 {
-            x_axis: Vec4::new(m[0], m[1], m[2], m[3]),
-            y_axis: Vec4::new(m[4], m[5], m[6], m[7]),
-            z_axis: Vec4::new(m[8], m[9], m[10], m[11]),
-            w_axis: Vec4::new(m[12], m[13], m[14], m[15]),
-        }
-    }
+    // #[inline]
+    // pub fn from_cols_array(m: &[f32; 16]) -> Self {
+        // Mat4 {
+            // x_axis: Vec4::new(m[0], m[1], m[2], m[3]),
+            // y_axis: Vec4::new(m[4], m[5], m[6], m[7]),
+            // z_axis: Vec4::new(m[8], m[9], m[10], m[11]),
+            // w_axis: Vec4::new(m[12], m[13], m[14], m[15]),
+        // }
+    // }
 
     /// Creates a new `[f32; 16]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat4` first.
-    #[inline]
-    pub fn to_cols_array(&self) -> [f32; 16] {
-        *self.as_ref()
-    }
+    // #[inline]
+    // pub fn to_cols_array(&self) -> [f32; 16] {
+        // *self.as_ref()
+    // }
 
     /// Creates a new `Mat4` from a `[[f32; 4]; 4]` stored in column major order.
     /// If your data is in row major order you will need to `transpose` the resulting `Mat4`.
-    #[inline]
-    pub fn from_cols_array_2d(m: &[[f32; 4]; 4]) -> Self {
-        Mat4 {
-            x_axis: m[0].into(),
-            y_axis: m[1].into(),
-            z_axis: m[2].into(),
-            w_axis: m[3].into(),
-        }
-    }
+    // #[inline]
+    // pub fn from_cols_array_2d(m: &[[f32; 4]; 4]) -> Self {
+        // Mat4 {
+            // x_axis: m[0].into(),
+            // y_axis: m[1].into(),
+            // z_axis: m[2].into(),
+            // w_axis: m[3].into(),
+        // }
+    // }
 
     /// Creates a new `[[f32; 4]; 4]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat4` first.
-    #[inline]
-    pub fn to_cols_array_2d(&self) -> [[f32; 4]; 4] {
-        [
-            self.x_axis.into(),
-            self.y_axis.into(),
-            self.z_axis.into(),
-            self.w_axis.into(),
-        ]
-    }
+    // #[inline]
+    // pub fn to_cols_array_2d(&self) -> [[f32; 4]; 4] {
+        // [
+            // self.x_axis.into(),
+            // self.y_axis.into(),
+            // self.z_axis.into(),
+            // self.w_axis.into(),
+        // ]
+    // }
 
     #[inline]
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
@@ -546,8 +550,8 @@ impl Mat4 {
 
     #[inline]
     /// Multiplies two 4x4 matrices.
-    pub fn mul_mat4(&self, other: &Self) -> Self {
-        Self {
+    pub fn mul_mat4(&self, other: &Mat4) -> Mat4 {
+        Mat4 {
             x_axis: self.mul_vec4(other.x_axis),
             y_axis: self.mul_vec4(other.y_axis),
             z_axis: self.mul_vec4(other.z_axis),
@@ -556,8 +560,8 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn add_mat4(&self, other: &Self) -> Self {
-        Self {
+    pub fn add_mat4(&self, other: &Mat4) -> Mat4 {
+        Mat4 {
             x_axis: self.x_axis + other.x_axis,
             y_axis: self.y_axis + other.y_axis,
             z_axis: self.z_axis + other.z_axis,
@@ -566,8 +570,8 @@ impl Mat4 {
     }
 
     #[inline]
-    pub fn sub_mat4(&self, other: &Self) -> Self {
-        Self {
+    pub fn sub_mat4(&self, other: &Mat4) -> Mat4 {
+        Mat4 {
             x_axis: self.x_axis - other.x_axis,
             y_axis: self.y_axis - other.y_axis,
             z_axis: self.z_axis - other.z_axis,
@@ -631,19 +635,19 @@ impl Distribution<Mat4> for Standard {
     }
 }
 
-impl AsRef<[f32; 16]> for Mat4 {
-    #[inline]
-    fn as_ref(&self) -> &[f32; 16] {
-        unsafe { &*(self as *const Self as *const [f32; 16]) }
-    }
-}
+// impl AsRef<[f32; 16]> for Mat4 {
+    // #[inline]
+    // fn as_ref(&self) -> &[f32; 16] {
+        // unsafe { &*(self as *const Self as *const [f32; 16]) }
+    // }
+// }
 
-impl AsMut<[f32; 16]> for Mat4 {
-    #[inline]
-    fn as_mut(&mut self) -> &mut [f32; 16] {
-        unsafe { &mut *(self as *mut Self as *mut [f32; 16]) }
-    }
-}
+// impl AsMut<[f32; 16]> for Mat4 {
+    // #[inline]
+    // fn as_mut(&mut self) -> &mut [f32; 16] {
+        // unsafe { &mut *(self as *mut Self as *mut [f32; 16]) }
+    // }
+// }
 
 impl Add<Mat4> for Mat4 {
     type Output = Self;

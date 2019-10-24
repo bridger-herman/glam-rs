@@ -121,6 +121,9 @@ and benchmarks.
 #![doc(html_root_url = "https://docs.rs/glam/0.8.0")]
 
 #[macro_use]
+extern crate wasm_bindgen;
+
+#[macro_use]
 mod macros;
 
 pub mod f32;

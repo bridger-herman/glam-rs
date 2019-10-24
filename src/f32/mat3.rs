@@ -1,5 +1,7 @@
 use super::{scalar_sin_cos, Quat, Vec2, Vec3};
 
+use wasm_bindgen::prelude::*;
+
 #[cfg(feature = "rand")]
 use rand::{
     distributions::{Distribution, Standard},
@@ -46,6 +48,7 @@ fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
 /// A 3x3 column major matrix.
 ///
 /// This type is 16 byte aligned.
+#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct Mat3 {
     pub(crate) x_axis: Vec3,
@@ -66,6 +69,7 @@ impl fmt::Display for Mat3 {
     }
 }
 
+#[wasm_bindgen]
 impl Mat3 {
     #[inline]
     pub fn zero() -> Self {
@@ -103,42 +107,42 @@ impl Mat3 {
 
     /// Creates a new `Mat3` from a `[f32; 9]` stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the resulting `Mat3`.
-    #[inline]
-    pub fn from_cols_array(m: &[f32; 9]) -> Self {
-        Mat3 {
-            x_axis: Vec3::new(m[0], m[1], m[2]),
-            y_axis: Vec3::new(m[3], m[4], m[5]),
-            z_axis: Vec3::new(m[6], m[7], m[8]),
-        }
-    }
+    // #[inline]
+    // pub fn from_cols_array(m: &[f32; 9]) -> Self {
+        // Mat3 {
+            // x_axis: Vec3::new(m[0], m[1], m[2]),
+            // y_axis: Vec3::new(m[3], m[4], m[5]),
+            // z_axis: Vec3::new(m[6], m[7], m[8]),
+        // }
+    // }
 
     /// Creates a new `[f32; 9]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat3` first.
-    #[inline]
-    pub fn to_cols_array(&self) -> [f32; 9] {
-        let (m00, m01, m02) = self.x_axis.into();
-        let (m10, m11, m12) = self.y_axis.into();
-        let (m20, m21, m22) = self.z_axis.into();
-        [m00, m01, m02, m10, m11, m12, m20, m21, m22]
-    }
+    // #[inline]
+    // pub fn to_cols_array(&self) -> [f32; 9] {
+        // let (m00, m01, m02) = self.x_axis.into();
+        // let (m10, m11, m12) = self.y_axis.into();
+        // let (m20, m21, m22) = self.z_axis.into();
+        // [m00, m01, m02, m10, m11, m12, m20, m21, m22]
+    // }
 
     /// Creates a new `Mat3` from a `[[f32; 3]; 3]` stored in column major order.
     /// If your data is in row major order you will need to `transpose` the resulting `Mat3`.
-    #[inline]
-    pub fn from_cols_array_2d(m: &[[f32; 3]; 3]) -> Self {
-        Mat3 {
-            x_axis: m[0].into(),
-            y_axis: m[1].into(),
-            z_axis: m[2].into(),
-        }
-    }
+    // #[inline]
+    // pub fn from_cols_array_2d(m: &[[f32; 3]; 3]) -> Self {
+        // Mat3 {
+            // x_axis: m[0].into(),
+            // y_axis: m[1].into(),
+            // z_axis: m[2].into(),
+        // }
+    // }
 
     /// Creates a new `[[f32; 3]; 3]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat3` first.
-    #[inline]
-    pub fn to_cols_array_2d(&self) -> [[f32; 3]; 3] {
-        [self.x_axis.into(), self.y_axis.into(), self.z_axis.into()]
-    }
+    // #[inline]
+    // pub fn to_cols_array_2d(&self) -> [[f32; 3]; 3] {
+        // [self.x_axis.into(), self.y_axis.into(), self.z_axis.into()]
+    // }
 
     /// Creates a new `Mat3` that can scale, rotate and translate a 2D vector.
     /// `angle` is in radians.
@@ -303,8 +307,8 @@ impl Mat3 {
 
     #[inline]
     /// Multiplies two 3x3 matrices.
-    pub fn mul_mat3(&self, other: &Self) -> Self {
-        Self {
+    pub fn mul_mat3(&self, other: &Mat3) -> Mat3 {
+        Mat3 {
             x_axis: self.mul_vec3(other.x_axis),
             y_axis: self.mul_vec3(other.y_axis),
             z_axis: self.mul_vec3(other.z_axis),
@@ -312,8 +316,8 @@ impl Mat3 {
     }
 
     #[inline]
-    pub fn add_mat3(&self, other: &Self) -> Self {
-        Self {
+    pub fn add_mat3(&self, other: &Mat3) -> Mat3 {
+        Mat3 {
             x_axis: self.x_axis + other.x_axis,
             y_axis: self.y_axis + other.y_axis,
             z_axis: self.z_axis + other.z_axis,
@@ -321,8 +325,8 @@ impl Mat3 {
     }
 
     #[inline]
-    pub fn sub_mat3(&self, other: &Self) -> Self {
-        Self {
+    pub fn sub_mat3(&self, other: &Mat3) -> Mat3 {
+        Mat3 {
             x_axis: self.x_axis - other.x_axis,
             y_axis: self.y_axis - other.y_axis,
             z_axis: self.z_axis - other.z_axis,
@@ -330,9 +334,9 @@ impl Mat3 {
     }
 
     #[inline]
-    pub fn mul_scalar(&self, other: f32) -> Self {
+    pub fn mul_scalar(&self, other: f32) -> Mat3 {
         let s = Vec3::splat(other);
-        Self {
+        Mat3 {
             x_axis: self.x_axis * s,
             y_axis: self.y_axis * s,
             z_axis: self.z_axis * s,

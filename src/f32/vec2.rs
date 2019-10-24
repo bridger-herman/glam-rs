@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use wasm_bindgen::prelude::*;
+
 use crate::f32::Vec3;
 
 #[cfg(feature = "rand")]
@@ -11,6 +13,7 @@ use rand::{
 use std::{f32, fmt, ops::*};
 
 /// A 2-dimensional vector.
+#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 #[repr(C)]
 pub struct Vec2(f32, f32);
@@ -20,6 +23,7 @@ pub fn vec2(x: f32, y: f32) -> Vec2 {
     Vec2(x, y)
 }
 
+#[wasm_bindgen]
 impl Vec2 {
     /// Returns a new `Vec4` with elements representing the sign of `self`.
     ///
@@ -483,10 +487,12 @@ impl Distribution<Vec2> for Standard {
 /// A 2-dimensional vector mask.
 ///
 /// This type is typically created by comparison methods on `Vec2`.
+#[wasm_bindgen]
 #[derive(Clone, Copy, Default)]
 #[repr(C)]
 pub struct Vec2Mask(u32, u32);
 
+#[wasm_bindgen]
 impl Vec2Mask {
     /// Creates a new `Vec2Mask`.
     #[inline]

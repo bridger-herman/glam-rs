@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use wasm_bindgen::prelude::*;
+
 use crate::f32::{Vec2, Vec4};
 
 #[cfg(feature = "rand")]
@@ -10,6 +12,7 @@ use rand::{
 
 use std::{f32, fmt, ops::*};
 
+#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]

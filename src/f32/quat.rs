@@ -17,6 +17,8 @@ use rand::{
     Rng,
 };
 
+use wasm_bindgen::prelude::*;
+
 use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec4};
 use std::{
     cmp::Ordering,
@@ -31,6 +33,7 @@ use std::{
 /// operations are applied.
 ///
 /// This type is 16 byte aligned.
+#[wasm_bindgen]
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Quat(pub(crate) Vec4);
@@ -40,6 +43,7 @@ pub fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
     Quat::new(x, y, z, w)
 }
 
+#[wasm_bindgen]
 impl Quat {
     /// Creates a new rotation quaternion.
     ///
@@ -195,19 +199,19 @@ impl Quat {
         )
     }
 
-    #[inline]
-    pub fn to_axis_angle(self) -> (Vec3, f32) {
-        const EPSILON: f32 = 1.0e-8;
-        const EPSILON_SQUARED: f32 = EPSILON * EPSILON;
-        let (x, y, z, w) = self.0.into();
-        let angle = scalar_acos(w) * 2.0;
-        let scale_sq = (1.0 - w * w).max(0.0);
-        if scale_sq >= EPSILON_SQUARED {
-            (Vec3::new(x, y, z) / scale_sq.sqrt(), angle)
-        } else {
-            (Vec3::unit_x(), angle)
-        }
-    }
+    // #[inline]
+    // pub fn to_axis_angle(self) -> (Vec3, f32) {
+        // const EPSILON: f32 = 1.0e-8;
+        // const EPSILON_SQUARED: f32 = EPSILON * EPSILON;
+        // let (x, y, z, w) = self.0.into();
+        // let angle = scalar_acos(w) * 2.0;
+        // let scale_sq = (1.0 - w * w).max(0.0);
+        // if scale_sq >= EPSILON_SQUARED {
+            // (Vec3::new(x, y, z) / scale_sq.sqrt(), angle)
+        // } else {
+            // (Vec3::unit_x(), angle)
+        // }
+    // }
 
     #[inline]
     pub fn conjugate(self) -> Self {

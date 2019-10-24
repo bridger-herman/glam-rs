@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use crate::{f32::Vec3, Align16};
+use wasm_bindgen::prelude::*;
 
 #[cfg(feature = "rand")]
 use rand::{
@@ -10,12 +11,14 @@ use rand::{
 
 use std::{f32, fmt, ops::*};
 
+#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 #[repr(C)]
 pub struct Vec4(f32, f32, f32, f32);
 
+#[wasm_bindgen]
 impl Vec4 {
     /// Creates a new `Vec4` with all elements set to `0.0`.
     #[inline]
@@ -584,12 +587,14 @@ impl Distribution<Vec4> for Standard {
 ///
 /// This type is typically created by comparison methods on `Vec4`.  It is
 /// essentially a vector of four boolean values.
+#[wasm_bindgen]
 #[derive(Clone, Copy, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 #[repr(C)]
 pub struct Vec4Mask(u32, u32, u32, u32);
 
+#[wasm_bindgen]
 impl Vec4Mask {
     /// Creates a new `Vec4Mask`.
     #[inline]
