@@ -13,7 +13,7 @@ use std::{
     ops::{Add, Mul, Sub},
 };
 
-#[inline]
+
 pub fn mat3(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Mat3 {
     Mat3 {
         x_axis,
@@ -22,7 +22,7 @@ pub fn mat3(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Mat3 {
     }
 }
 
-#[inline]
+
 fn quat_to_axes(rotation: Quat) -> (Vec3, Vec3, Vec3) {
     glam_assert!(rotation.is_normalized());
     let (x, y, z, w) = rotation.into();
@@ -57,7 +57,7 @@ pub struct Mat3 {
 }
 
 impl Default for Mat3 {
-    #[inline]
+    
     fn default() -> Self {
         Self::identity()
     }
@@ -71,7 +71,7 @@ impl fmt::Display for Mat3 {
 
 #[wasm_bindgen]
 impl Mat3 {
-    #[inline]
+    
     pub fn zero() -> Self {
         Self {
             x_axis: Vec3::zero(),
@@ -80,7 +80,7 @@ impl Mat3 {
         }
     }
 
-    #[inline]
+    
     pub fn identity() -> Self {
         Self {
             x_axis: Vec3::unit_x(),
@@ -90,13 +90,13 @@ impl Mat3 {
     }
 
     #[deprecated(since = "0.7.2", note = "please use `Mat3::from_cols` instead")]
-    #[inline]
+    
     pub fn new(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
         Self::from_cols(x_axis, y_axis, z_axis)
     }
 
     /// Creates a new `Mat3` from three column vectors.
-    #[inline]
+    
     pub fn from_cols(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
         Self {
             x_axis,
@@ -107,7 +107,7 @@ impl Mat3 {
 
     /// Creates a new `Mat3` from a `[f32; 9]` stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the resulting `Mat3`.
-    // #[inline]
+    // 
     // pub fn from_cols_array(m: &[f32; 9]) -> Self {
         // Mat3 {
             // x_axis: Vec3::new(m[0], m[1], m[2]),
@@ -118,7 +118,7 @@ impl Mat3 {
 
     /// Creates a new `[f32; 9]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat3` first.
-    // #[inline]
+    // 
     // pub fn to_cols_array(&self) -> [f32; 9] {
         // let (m00, m01, m02) = self.x_axis.into();
         // let (m10, m11, m12) = self.y_axis.into();
@@ -128,7 +128,7 @@ impl Mat3 {
 
     /// Creates a new `Mat3` from a `[[f32; 3]; 3]` stored in column major order.
     /// If your data is in row major order you will need to `transpose` the resulting `Mat3`.
-    // #[inline]
+    // 
     // pub fn from_cols_array_2d(m: &[[f32; 3]; 3]) -> Self {
         // Mat3 {
             // x_axis: m[0].into(),
@@ -139,14 +139,14 @@ impl Mat3 {
 
     /// Creates a new `[[f32; 3]; 3]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat3` first.
-    // #[inline]
+    // 
     // pub fn to_cols_array_2d(&self) -> [[f32; 3]; 3] {
         // [self.x_axis.into(), self.y_axis.into(), self.z_axis.into()]
     // }
 
     /// Creates a new `Mat3` that can scale, rotate and translate a 2D vector.
     /// `angle` is in radians.
-    #[inline]
+    
     pub fn from_scale_angle_translation(scale: Vec2, angle: f32, translation: Vec2) -> Self {
         glam_assert!(scale.cmpne(Vec2::zero()).all());
         let (sin, cos) = scalar_sin_cos(angle);
@@ -158,7 +158,7 @@ impl Mat3 {
         }
     }
 
-    #[inline]
+    
     pub fn from_quat(rotation: Quat) -> Self {
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
         Self {
@@ -169,7 +169,7 @@ impl Mat3 {
     }
 
     /// Create a 3x3 rotation matrix from a normalized rotation axis and angle (in radians).
-    #[inline]
+    
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
         let (sin, cos) = scalar_sin_cos(angle);
@@ -188,14 +188,14 @@ impl Mat3 {
     }
 
     /// Create a 3x3 rotation matrix from the given euler angles (in radians).
-    #[inline]
+    
     pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
         let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
         Self::from_quat(quat)
     }
 
     /// Create a 3x3 rotation matrix from the angle (in radians) around the x axis.
-    #[inline]
+    
     pub fn from_rotation_x(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
         Self {
@@ -206,7 +206,7 @@ impl Mat3 {
     }
 
     /// Create a 3x3 rotation matrix from the angle (in radians) around the y axis.
-    #[inline]
+    
     pub fn from_rotation_y(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
         Self {
@@ -217,7 +217,7 @@ impl Mat3 {
     }
 
     /// Create a 3x3 rotation matrix from the angle (in radians) around the z axis.
-    #[inline]
+    
     pub fn from_rotation_z(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
         Self {
@@ -227,7 +227,7 @@ impl Mat3 {
         }
     }
 
-    #[inline]
+    
     pub fn from_scale(scale: Vec3) -> Self {
         glam_assert!(scale.cmpne(Vec3::zero()).all());
         let (x, y, z) = scale.into();
@@ -238,37 +238,37 @@ impl Mat3 {
         }
     }
 
-    #[inline]
+    
     pub fn set_x_axis(&mut self, x: Vec3) {
         self.x_axis = x;
     }
 
-    #[inline]
+    
     pub fn set_y_axis(&mut self, y: Vec3) {
         self.y_axis = y;
     }
 
-    #[inline]
+    
     pub fn set_z_axis(&mut self, z: Vec3) {
         self.z_axis = z;
     }
 
-    #[inline]
+    
     pub fn x_axis(&self) -> Vec3 {
         self.x_axis
     }
 
-    #[inline]
+    
     pub fn y_axis(&self) -> Vec3 {
         self.y_axis
     }
 
-    #[inline]
+    
     pub fn z_axis(&self) -> Vec3 {
         self.z_axis
     }
 
-    #[inline]
+    
     pub fn transpose(&self) -> Self {
         let (m00, m01, m02) = self.x_axis.into();
         let (m10, m11, m12) = self.y_axis.into();
@@ -281,7 +281,7 @@ impl Mat3 {
         }
     }
 
-    #[inline]
+    
     pub fn determinant(&self) -> f32 {
         self.z_axis.dot(self.x_axis.cross(self.y_axis))
     }
@@ -297,7 +297,7 @@ impl Mat3 {
         Mat3::from_cols(tmp0 * inv_det, tmp1 * inv_det, tmp2 * inv_det).transpose()
     }
 
-    #[inline]
+    
     pub fn mul_vec3(&self, other: Vec3) -> Vec3 {
         let mut res = self.x_axis * other.dup_x();
         res = self.y_axis.mul_add(other.dup_y(), res);
@@ -305,7 +305,7 @@ impl Mat3 {
         res
     }
 
-    #[inline]
+    
     /// Multiplies two 3x3 matrices.
     pub fn mul_mat3(&self, other: &Mat3) -> Mat3 {
         Mat3 {
@@ -315,7 +315,7 @@ impl Mat3 {
         }
     }
 
-    #[inline]
+    
     pub fn add_mat3(&self, other: &Mat3) -> Mat3 {
         Mat3 {
             x_axis: self.x_axis + other.x_axis,
@@ -324,7 +324,7 @@ impl Mat3 {
         }
     }
 
-    #[inline]
+    
     pub fn sub_mat3(&self, other: &Mat3) -> Mat3 {
         Mat3 {
             x_axis: self.x_axis - other.x_axis,
@@ -333,7 +333,7 @@ impl Mat3 {
         }
     }
 
-    #[inline]
+    
     pub fn mul_scalar(&self, other: f32) -> Mat3 {
         let s = Vec3::splat(other);
         Mat3 {
@@ -343,13 +343,13 @@ impl Mat3 {
         }
     }
 
-    #[inline]
+    
     pub fn transform_point2(&self, other: Vec2) -> Vec2 {
         // TODO: optimise
         self.mul_vec3(other.extend(1.0)).truncate()
     }
 
-    #[inline]
+    
     pub fn transform_vector2(&self, other: Vec2) -> Vec2 {
         // TODO: optimise
         self.mul_vec3(other.extend(0.0)).truncate()
@@ -364,7 +364,7 @@ impl Mat3 {
     ///
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
-    #[inline]
+    
     pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
         self.x_axis.abs_diff_eq(other.x_axis, max_abs_diff)
             && self.y_axis.abs_diff_eq(other.y_axis, max_abs_diff)
@@ -374,7 +374,7 @@ impl Mat3 {
 
 #[cfg(feature = "rand")]
 impl Distribution<Mat3> for Standard {
-    #[inline]
+    
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Mat3 {
         Mat3::from_cols_array(&rng.gen())
     }
@@ -382,7 +382,7 @@ impl Distribution<Mat3> for Standard {
 
 impl Add<Mat3> for Mat3 {
     type Output = Self;
-    #[inline]
+    
     fn add(self, other: Self) -> Self {
         self.add_mat3(&other)
     }
@@ -390,7 +390,7 @@ impl Add<Mat3> for Mat3 {
 
 impl Sub<Mat3> for Mat3 {
     type Output = Self;
-    #[inline]
+    
     fn sub(self, other: Self) -> Self {
         self.sub_mat3(&other)
     }
@@ -398,7 +398,7 @@ impl Sub<Mat3> for Mat3 {
 
 impl Mul<Mat3> for Mat3 {
     type Output = Self;
-    #[inline]
+    
     fn mul(self, other: Self) -> Self {
         self.mul_mat3(&other)
     }
@@ -406,7 +406,7 @@ impl Mul<Mat3> for Mat3 {
 
 impl Mul<Vec3> for Mat3 {
     type Output = Vec3;
-    #[inline]
+    
     fn mul(self, other: Vec3) -> Vec3 {
         self.mul_vec3(other)
     }
@@ -414,7 +414,7 @@ impl Mul<Vec3> for Mat3 {
 
 impl Mul<Mat3> for f32 {
     type Output = Mat3;
-    #[inline]
+    
     fn mul(self, other: Mat3) -> Mat3 {
         other.mul_scalar(self)
     }
@@ -422,7 +422,7 @@ impl Mul<Mat3> for f32 {
 
 impl Mul<f32> for Mat3 {
     type Output = Self;
-    #[inline]
+    
     fn mul(self, other: f32) -> Self {
         self.mul_scalar(other)
     }

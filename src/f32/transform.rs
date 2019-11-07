@@ -15,7 +15,7 @@ pub struct TransformSRT {
 }
 
 impl Default for TransformSRT {
-    #[inline]
+    
     fn default() -> Self {
         Self {
             scale: Vec3::one(),
@@ -32,7 +32,7 @@ pub struct TransformRT {
 }
 
 impl Default for TransformRT {
-    #[inline]
+    
     fn default() -> Self {
         Self {
             rotation: Quat::identity(),
@@ -42,7 +42,7 @@ impl Default for TransformRT {
 }
 
 impl TransformSRT {
-    #[inline]
+    
     pub fn new(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         Self {
             scale,
@@ -51,7 +51,7 @@ impl TransformSRT {
         }
     }
 
-    #[inline]
+    
     pub fn from_transform_rt(scale: Vec3, rt: &TransformRT) -> Self {
         Self {
             scale,
@@ -60,7 +60,7 @@ impl TransformSRT {
         }
     }
 
-    #[inline]
+    
     pub fn identity() -> Self {
         Self {
             scale: Vec3::one(),
@@ -69,7 +69,7 @@ impl TransformSRT {
         }
     }
 
-    #[inline]
+    
     pub fn inverse(&self) -> Self {
         let scale = self.scale.reciprocal();
         let rotation = self.rotation.conjugate();
@@ -81,7 +81,7 @@ impl TransformSRT {
         }
     }
 
-    #[inline]
+    
     pub fn normalize(&self) -> Self {
         let rotation = self.rotation.normalize();
         Self {
@@ -91,18 +91,18 @@ impl TransformSRT {
         }
     }
 
-    #[inline]
+    
     pub fn mul_transform(&self, other: &Self) -> Self {
         mul_srt_srt(self, other)
     }
 
-    #[inline]
+    
     pub fn transform_vec3(self, other: Vec3) -> Vec3 {
         (self.rotation * (other * self.scale)) + self.translation
     }
 }
 
-#[inline]
+
 fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
     // from rtm qvv_mul
     let min_scale = lhs.scale.min(rhs.scale);
@@ -142,7 +142,7 @@ fn mul_srt_srt(lhs: &TransformSRT, rhs: &TransformSRT) -> TransformSRT {
     }
 }
 
-#[inline]
+
 fn mul_rt_rt(lhs: &TransformRT, rhs: &TransformRT) -> TransformRT {
     let rotation = lhs.rotation * rhs.rotation;
     let translation = (rhs.rotation * lhs.translation) + rhs.translation;
@@ -153,7 +153,7 @@ fn mul_rt_rt(lhs: &TransformRT, rhs: &TransformRT) -> TransformRT {
 }
 
 impl TransformRT {
-    #[inline]
+    
     pub fn new(rotation: Quat, translation: Vec3) -> Self {
         Self {
             rotation,
@@ -161,7 +161,7 @@ impl TransformRT {
         }
     }
 
-    #[inline]
+    
     pub fn identity() -> Self {
         Self {
             rotation: Quat::identity(),
@@ -169,7 +169,7 @@ impl TransformRT {
         }
     }
 
-    #[inline]
+    
     pub fn inverse(&self) -> Self {
         let rotation = self.rotation.conjugate();
         let translation = -(rotation * self.translation);
@@ -179,7 +179,7 @@ impl TransformRT {
         }
     }
 
-    #[inline]
+    
     pub fn normalize(&self) -> Self {
         let rotation = self.rotation.normalize();
         Self {
@@ -188,26 +188,26 @@ impl TransformRT {
         }
     }
 
-    #[inline]
+    
     pub fn mul_transform(&self, other: &Self) -> Self {
         mul_rt_rt(self, other)
     }
 
-    #[inline]
+    
     pub fn transform_vec3(self, other: Vec3) -> Vec3 {
         (self.rotation * other) + self.translation
     }
 }
 
 impl AsRef<TransformRT> for TransformSRT {
-    #[inline]
+    
     fn as_ref(&self) -> &TransformRT {
         unsafe { &*(self as *const Self as *const TransformRT) }
     }
 }
 
 impl AsMut<TransformRT> for TransformSRT {
-    #[inline]
+    
     fn as_mut(&mut self) -> &mut TransformRT {
         unsafe { &mut *(self as *mut Self as *mut TransformRT) }
     }
@@ -215,7 +215,7 @@ impl AsMut<TransformRT> for TransformSRT {
 
 impl Mul<Vec3> for TransformRT {
     type Output = Vec3;
-    #[inline]
+    
     fn mul(self, other: Vec3) -> Vec3 {
         self.transform_vec3(other)
     }
@@ -223,7 +223,7 @@ impl Mul<Vec3> for TransformRT {
 
 impl Mul<Vec3> for TransformSRT {
     type Output = Vec3;
-    #[inline]
+    
     fn mul(self, other: Vec3) -> Vec3 {
         self.transform_vec3(other)
     }
@@ -231,7 +231,7 @@ impl Mul<Vec3> for TransformSRT {
 
 impl Mul<TransformRT> for TransformRT {
     type Output = TransformRT;
-    #[inline]
+    
     fn mul(self, other: TransformRT) -> TransformRT {
         mul_rt_rt(&self, &other)
     }
@@ -239,7 +239,7 @@ impl Mul<TransformRT> for TransformRT {
 
 impl Mul<TransformSRT> for TransformSRT {
     type Output = Self;
-    #[inline]
+    
     fn mul(self, other: Self) -> Self::Output {
         mul_srt_srt(&self, &other)
     }
@@ -247,7 +247,7 @@ impl Mul<TransformSRT> for TransformSRT {
 
 impl Mul<TransformRT> for TransformSRT {
     type Output = TransformSRT;
-    #[inline]
+    
     fn mul(self, other: TransformRT) -> Self::Output {
         mul_srt_srt(&self, &other.into())
     }
@@ -255,14 +255,14 @@ impl Mul<TransformRT> for TransformSRT {
 
 impl Mul<TransformSRT> for TransformRT {
     type Output = TransformSRT;
-    #[inline]
+    
     fn mul(self, other: TransformSRT) -> Self::Output {
         mul_srt_srt(&self.into(), &other)
     }
 }
 
 impl From<TransformRT> for TransformSRT {
-    #[inline]
+    
     fn from(tr: TransformRT) -> Self {
         Self {
             translation: tr.translation,
@@ -274,7 +274,7 @@ impl From<TransformRT> for TransformSRT {
 
 #[cfg(feature = "rand")]
 impl Distribution<TransformRT> for Standard {
-    #[inline]
+    
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformRT {
         TransformRT::new(
             rng.gen::<Quat>(),
@@ -289,7 +289,7 @@ impl Distribution<TransformRT> for Standard {
 
 #[cfg(feature = "rand")]
 impl Distribution<TransformSRT> for Standard {
-    #[inline]
+    
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TransformSRT {
         let mut gen_non_zero = || loop {
             let f: f32 = rng.gen_range(std::f32::MIN, std::f32::MAX);
@@ -310,14 +310,14 @@ impl Distribution<TransformSRT> for Standard {
 }
 
 impl From<TransformSRT> for Mat4 {
-    #[inline]
+    
     fn from(srt: TransformSRT) -> Self {
         Mat4::from_scale_rotation_translation(srt.scale, srt.rotation, srt.translation)
     }
 }
 
 impl From<TransformRT> for Mat4 {
-    #[inline]
+    
     fn from(rt: TransformRT) -> Self {
         Mat4::from_rotation_translation(rt.rotation, rt.translation)
     }
