@@ -140,7 +140,6 @@ pub unsafe fn sin_cos_sse2(x: __m128) -> (__m128, __m128) {
     )
 }
 
-
 pub fn scalar_acos(value: f32) -> f32 {
     // from DirectXMath XMScalarAcos
     // Clamp input to [-1,1].

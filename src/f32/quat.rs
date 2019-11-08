@@ -38,7 +38,6 @@ use std::{
 #[repr(C)]
 pub struct Quat(pub(crate) Vec4);
 
-
 pub fn quat(x: f32, y: f32, z: f32, w: f32) -> Quat {
     Quat::new(x, y, z, w)
 }
@@ -51,12 +50,11 @@ impl Quat {
     /// the other constructors instead such as `identity` or `from_axis_angle`.
     ///
     /// `new` is mostly used by unit tests and `serde` deserialization.
-    
+
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self(Vec4::new(x, y, z, w))
     }
 
-    
     pub fn identity() -> Self {
         Self(Vec4::new(0.0, 0.0, 0.0, 1.0))
     }
@@ -70,7 +68,7 @@ impl Quat {
     /// # Panics
     ///
     /// Panics if `slice` length is less than 4.
-    
+
     pub fn from_slice_unaligned(slice: &[f32]) -> Self {
         let q = Self(Vec4::from_slice_unaligned(slice));
         glam_assert!(q.is_normalized());
@@ -82,14 +80,14 @@ impl Quat {
     /// # Panics
     ///
     /// Panics if `slice` length is less than 4.
-    
+
     pub fn write_to_slice_unaligned(self, slice: &mut [f32]) {
         self.0.write_to_slice_unaligned(slice)
     }
 
     /// Create a new quaterion for a normalized rotation axis and angle
     /// (in radians).
-    
+
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
         let (s, c) = scalar_sin_cos(angle * 0.5);
@@ -97,27 +95,26 @@ impl Quat {
     }
 
     /// Creates a new quaternion from the angle (in radians) around the x axis.
-    
+
     pub fn from_rotation_x(angle: f32) -> Self {
         let (s, c) = scalar_sin_cos(angle * 0.5);
         Self::new(s, 0.0, 0.0, c)
     }
 
     /// Creates a new quaternion from the angle (in radians) around the y axis.
-    
+
     pub fn from_rotation_y(angle: f32) -> Self {
         let (s, c) = scalar_sin_cos(angle * 0.5);
         Self::new(0.0, s, 0.0, c)
     }
 
     /// Creates a new quaternion from the angle (in radians) around the z axis.
-    
+
     pub fn from_rotation_z(angle: f32) -> Self {
         let (s, c) = scalar_sin_cos(angle * 0.5);
         Self::new(0.0, 0.0, s, c)
     }
 
-    
     /// Create a quaternion from the given yaw (around y), pitch (around x) and roll (around z)
     /// in radians.
     pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
@@ -125,7 +122,6 @@ impl Quat {
         Self::from_rotation_y(yaw) * Self::from_rotation_x(pitch) * Self::from_rotation_z(roll)
     }
 
-    
     fn from_rotation_axes(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
         // from DirectXMath XMQuaternionRotationMatrix
         // TODO: sse2 version
@@ -185,12 +181,10 @@ impl Quat {
         }
     }
 
-    
     pub fn from_rotation_mat3(mat: &Mat3) -> Self {
         Self::from_rotation_axes(mat.x_axis(), mat.y_axis(), mat.z_axis())
     }
 
-    
     pub fn from_rotation_mat4(mat: &Mat4) -> Self {
         Self::from_rotation_axes(
             mat.x_axis().truncate(),
@@ -199,57 +193,49 @@ impl Quat {
         )
     }
 
-    // 
+    //
     // pub fn to_axis_angle(self) -> (Vec3, f32) {
-        // const EPSILON: f32 = 1.0e-8;
-        // const EPSILON_SQUARED: f32 = EPSILON * EPSILON;
-        // let (x, y, z, w) = self.0.into();
-        // let angle = scalar_acos(w) * 2.0;
-        // let scale_sq = (1.0 - w * w).max(0.0);
-        // if scale_sq >= EPSILON_SQUARED {
-            // (Vec3::new(x, y, z) / scale_sq.sqrt(), angle)
-        // } else {
-            // (Vec3::unit_x(), angle)
-        // }
+    // const EPSILON: f32 = 1.0e-8;
+    // const EPSILON_SQUARED: f32 = EPSILON * EPSILON;
+    // let (x, y, z, w) = self.0.into();
+    // let angle = scalar_acos(w) * 2.0;
+    // let scale_sq = (1.0 - w * w).max(0.0);
+    // if scale_sq >= EPSILON_SQUARED {
+    // (Vec3::new(x, y, z) / scale_sq.sqrt(), angle)
+    // } else {
+    // (Vec3::unit_x(), angle)
+    // }
     // }
 
-    
     pub fn conjugate(self) -> Self {
         Self(self.0.truncate().neg().extend(self.0.w()))
     }
 
-    
     pub fn dot(self, other: Self) -> f32 {
         self.0.dot(other.0)
     }
 
-    
     pub fn length(self) -> f32 {
         self.0.length()
     }
 
-    
     pub fn length_squared(self) -> f32 {
         self.0.length_squared()
     }
 
-    
     pub fn length_reciprocal(self) -> f32 {
         1.0 / self.0.length()
     }
 
-    
     pub fn normalize(self) -> Self {
         let inv_len = self.0.length_reciprocal();
         Self(self.0.mul(inv_len))
     }
 
-    
     pub fn is_normalized(self) -> bool {
         is_normalized!(self)
     }
 
-    
     pub fn is_near_identity(self) -> bool {
         // Implementation taken from RTM
         const THRESHOLD_ANGLE: f32 = 0.002_847_144_6;
@@ -279,12 +265,11 @@ impl Quat {
     ///
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
-    
+
     pub fn abs_diff_eq(self, other: Self, max_abs_diff: f32) -> bool {
         self.0.abs_diff_eq(other.0, max_abs_diff)
     }
 
-    
     pub fn lerp(self, end: Self, t: f32) -> Self {
         glam_assert!(self.is_normalized());
         glam_assert!(end.is_normalized());
@@ -297,7 +282,7 @@ impl Quat {
     }
 
     #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-    
+
     /// Multiplies a quaternion and a 3D vector, rotating it.
     pub fn mul_vec3(self, other: Vec3) -> Vec3 {
         glam_assert!(self.is_normalized());
@@ -308,7 +293,7 @@ impl Quat {
     }
 
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    
+
     /// Multiplies a quaternion and a 3D vector, rotating it.
     pub fn mul_vec3(self, other: Vec3) -> Vec3 {
         glam_assert!(self.is_normalized());
@@ -320,7 +305,7 @@ impl Quat {
     }
 
     #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-    
+
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
     pub fn mul_quat(self, other: Self) -> Self {
@@ -337,7 +322,7 @@ impl Quat {
     }
 
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    
+
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
     pub fn mul_quat(self, other: Self) -> Self {
@@ -411,14 +396,13 @@ impl fmt::Display for Quat {
 
 impl Mul<Quat> for Quat {
     type Output = Self;
-    
+
     fn mul(self, other: Self) -> Self {
         self.mul_quat(other)
     }
 }
 
 impl MulAssign<Quat> for Quat {
-    
     fn mul_assign(&mut self, other: Self) {
         *self = self.mul_quat(other);
     }
@@ -426,7 +410,7 @@ impl MulAssign<Quat> for Quat {
 
 impl Mul<Vec3> for Quat {
     type Output = Vec3;
-    
+
     fn mul(self, other: Vec3) -> Vec3 {
         self.mul_vec3(other)
     }
@@ -434,84 +418,73 @@ impl Mul<Vec3> for Quat {
 
 impl Neg for Quat {
     type Output = Self;
-    
+
     fn neg(self) -> Self {
         Self(-1.0 * self.0)
     }
 }
 
 impl Default for Quat {
-    
     fn default() -> Self {
         Self::identity()
     }
 }
 
 impl PartialEq for Quat {
-    
     fn eq(&self, other: &Self) -> bool {
         self.0.cmpeq(other.0).all()
     }
 }
 
 impl PartialOrd for Quat {
-    
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.as_ref().partial_cmp(other.as_ref())
     }
 }
 
 impl AsRef<[f32; 4]> for Quat {
-    
     fn as_ref(&self) -> &[f32; 4] {
         self.0.as_ref()
     }
 }
 
 impl AsMut<[f32; 4]> for Quat {
-    
     fn as_mut(&mut self) -> &mut [f32; 4] {
         self.0.as_mut()
     }
 }
 
 impl From<Vec4> for Quat {
-    
     fn from(v: Vec4) -> Self {
         Self(v)
     }
 }
 
 impl From<Quat> for Vec4 {
-    
     fn from(q: Quat) -> Self {
         q.0
     }
 }
 
 impl From<(f32, f32, f32, f32)> for Quat {
-    
     fn from(t: (f32, f32, f32, f32)) -> Self {
         Quat::new(t.0, t.1, t.2, t.3)
     }
 }
 
 impl From<Quat> for (f32, f32, f32, f32) {
-    
     fn from(q: Quat) -> Self {
         q.0.into()
     }
 }
 
 impl From<[f32; 4]> for Quat {
-    
     fn from(a: [f32; 4]) -> Self {
         Self(a.into())
     }
 }
 
 impl From<Quat> for [f32; 4] {
-    
     fn from(q: Quat) -> Self {
         q.0.into()
     }
@@ -519,7 +492,6 @@ impl From<Quat> for [f32; 4] {
 
 #[cfg(feature = "rand")]
 impl Distribution<Quat> for Standard {
-    
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Quat {
         use std::f32::consts::PI;
         let yaw = -PI + rng.gen::<f32>() * 2.0 * PI;
@@ -533,7 +505,7 @@ impl Distribution<Quat> for Standard {
 impl From<Quat> for __m128 {
     // TODO: write test
     #[cfg_attr(tarpaulin, skip)]
-    
+
     fn from(q: Quat) -> Self {
         (q.0).0
     }
@@ -541,7 +513,6 @@ impl From<Quat> for __m128 {
 
 #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 impl From<__m128> for Quat {
-    
     fn from(t: __m128) -> Self {
         Self(Vec4(t))
     }

@@ -13,7 +13,6 @@ use std::{
     ops::{Add, Mul, Sub},
 };
 
-
 pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
     Mat4 {
         x_axis,
@@ -22,7 +21,6 @@ pub fn mat4(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Mat4 {
         w_axis,
     }
 }
-
 
 fn quat_to_axes(rotation: Quat) -> (Vec4, Vec4, Vec4) {
     glam_assert!(rotation.is_normalized());
@@ -59,7 +57,6 @@ pub struct Mat4 {
 }
 
 impl Default for Mat4 {
-    
     fn default() -> Self {
         Self::identity()
     }
@@ -78,7 +75,7 @@ impl fmt::Display for Mat4 {
 #[wasm_bindgen]
 impl Mat4 {
     /// Creates a new `Mat4` with all elements set to `0.0`.
-    
+
     pub fn zero() -> Self {
         Self {
             x_axis: Vec4::zero(),
@@ -89,7 +86,7 @@ impl Mat4 {
     }
 
     /// Creates a new `Mat4` identity matrix.
-    
+
     pub fn identity() -> Self {
         Self {
             x_axis: Vec4::unit_x(),
@@ -100,13 +97,13 @@ impl Mat4 {
     }
 
     #[deprecated(since = "0.7.2", note = "please use `Mat4::from_cols` instead")]
-    
+
     pub fn new(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
         Self::from_cols(x_axis, y_axis, z_axis, w_axis)
     }
 
     /// Creates a new `Mat4` from four column vectors.
-    
+
     pub fn from_cols(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
         Self {
             x_axis,
@@ -118,48 +115,47 @@ impl Mat4 {
 
     /// Creates a new `Mat4` from a `[f32; 16]` stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the resulting `Mat4`.
-    // 
+    //
     // pub fn from_cols_array(m: &[f32; 16]) -> Self {
-        // Mat4 {
-            // x_axis: Vec4::new(m[0], m[1], m[2], m[3]),
-            // y_axis: Vec4::new(m[4], m[5], m[6], m[7]),
-            // z_axis: Vec4::new(m[8], m[9], m[10], m[11]),
-            // w_axis: Vec4::new(m[12], m[13], m[14], m[15]),
-        // }
+    // Mat4 {
+    // x_axis: Vec4::new(m[0], m[1], m[2], m[3]),
+    // y_axis: Vec4::new(m[4], m[5], m[6], m[7]),
+    // z_axis: Vec4::new(m[8], m[9], m[10], m[11]),
+    // w_axis: Vec4::new(m[12], m[13], m[14], m[15]),
+    // }
     // }
 
     /// Creates a new `[f32; 16]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat4` first.
-    // 
+    //
     // pub fn to_cols_array(&self) -> [f32; 16] {
-        // *self.as_ref()
+    // *self.as_ref()
     // }
 
     /// Creates a new `Mat4` from a `[[f32; 4]; 4]` stored in column major order.
     /// If your data is in row major order you will need to `transpose` the resulting `Mat4`.
-    // 
+    //
     // pub fn from_cols_array_2d(m: &[[f32; 4]; 4]) -> Self {
-        // Mat4 {
-            // x_axis: m[0].into(),
-            // y_axis: m[1].into(),
-            // z_axis: m[2].into(),
-            // w_axis: m[3].into(),
-        // }
+    // Mat4 {
+    // x_axis: m[0].into(),
+    // y_axis: m[1].into(),
+    // z_axis: m[2].into(),
+    // w_axis: m[3].into(),
+    // }
     // }
 
     /// Creates a new `[[f32; 4]; 4]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat4` first.
-    // 
+    //
     // pub fn to_cols_array_2d(&self) -> [[f32; 4]; 4] {
-        // [
-            // self.x_axis.into(),
-            // self.y_axis.into(),
-            // self.z_axis.into(),
-            // self.w_axis.into(),
-        // ]
+    // [
+    // self.x_axis.into(),
+    // self.y_axis.into(),
+    // self.z_axis.into(),
+    // self.w_axis.into(),
+    // ]
     // }
 
-    
     pub fn from_scale_rotation_translation(scale: Vec3, rotation: Quat, translation: Vec3) -> Self {
         glam_assert!(scale.cmpne(Vec3::zero()).all());
         glam_assert!(rotation.is_normalized());
@@ -173,7 +169,6 @@ impl Mat4 {
         }
     }
 
-    
     pub fn from_rotation_translation(rotation: Quat, translation: Vec3) -> Self {
         glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
@@ -185,7 +180,6 @@ impl Mat4 {
         }
     }
 
-    
     pub fn from_quat(rotation: Quat) -> Self {
         glam_assert!(rotation.is_normalized());
         let (x_axis, y_axis, z_axis) = quat_to_axes(rotation);
@@ -197,7 +191,6 @@ impl Mat4 {
         }
     }
 
-    
     pub fn from_translation(translation: Vec3) -> Self {
         Self {
             x_axis: Vec4::unit_x(),
@@ -209,7 +202,7 @@ impl Mat4 {
 
     /// Creates a new `Mat4` containing a rotation around a normalized rotation axis of
     /// angle (in radians).
-    
+
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         glam_assert!(axis.is_normalized());
         let (sin, cos) = scalar_sin_cos(angle);
@@ -230,7 +223,7 @@ impl Mat4 {
 
     /// Creates a new `Mat4` containing a rotation around the given euler angles
     /// (in radians).
-    
+
     pub fn from_rotation_ypr(yaw: f32, pitch: f32, roll: f32) -> Self {
         let quat = Quat::from_rotation_ypr(yaw, pitch, roll);
         Self::from_quat(quat)
@@ -238,7 +231,7 @@ impl Mat4 {
 
     /// Creates a new `Mat4` containing a rotation around the x axis of angle
     /// (in radians).
-    
+
     pub fn from_rotation_x(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
         Self {
@@ -251,7 +244,7 @@ impl Mat4 {
 
     /// Creates a new `Mat4` containing a rotation around the y axis of angle
     /// (in radians).
-    
+
     pub fn from_rotation_y(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
         Self {
@@ -264,7 +257,7 @@ impl Mat4 {
 
     /// Creates a new `Mat4` containing a rotation around the z axis of angle
     /// (in radians).
-    
+
     pub fn from_rotation_z(angle: f32) -> Self {
         let (sina, cosa) = scalar_sin_cos(angle);
         Self {
@@ -275,7 +268,6 @@ impl Mat4 {
         }
     }
 
-    
     pub fn from_scale(scale: Vec3) -> Self {
         glam_assert!(scale.cmpne(Vec3::zero()).all());
         let (x, y, z) = scale.into();
@@ -287,48 +279,40 @@ impl Mat4 {
         }
     }
 
-    
     pub fn set_x_axis(&mut self, x: Vec4) {
         self.x_axis = x;
     }
 
-    
     pub fn set_y_axis(&mut self, y: Vec4) {
         self.y_axis = y;
     }
 
-    
     pub fn set_z_axis(&mut self, z: Vec4) {
         self.z_axis = z;
     }
 
-    
     pub fn set_w_axis(&mut self, w: Vec4) {
         self.w_axis = w;
     }
 
-    
     pub fn x_axis(&self) -> Vec4 {
         self.x_axis
     }
 
-    
     pub fn y_axis(&self) -> Vec4 {
         self.y_axis
     }
 
-    
     pub fn z_axis(&self) -> Vec4 {
         self.z_axis
     }
 
-    
     pub fn w_axis(&self) -> Vec4 {
         self.w_axis
     }
 
     #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-    
+
     pub fn transpose(&self) -> Self {
         // sse2 implementation based off DirectXMath XMMatrixInverse (MIT License)
         #[cfg(target_arch = "x86")]
@@ -352,7 +336,7 @@ impl Mat4 {
     }
 
     #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-    
+
     pub fn transpose(&self) -> Self {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
@@ -367,7 +351,6 @@ impl Mat4 {
         }
     }
 
-    
     pub fn determinant(&self) -> f32 {
         let (m00, m01, m02, m03) = self.x_axis.into();
         let (m10, m11, m12, m13) = self.y_axis.into();
@@ -461,7 +444,6 @@ impl Mat4 {
         inverse * rcp_det
     }
 
-    
     // TODO: make public at some point
     fn look_to_lh(eye: Vec3, dir: Vec3, up: Vec3) -> Self {
         let f = dir.normalize();
@@ -478,19 +460,16 @@ impl Mat4 {
         )
     }
 
-    
     pub fn look_at_lh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         Mat4::look_to_lh(eye, center - eye, up)
     }
 
-    
     pub fn look_at_rh(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         glam_assert!(up.is_normalized());
         Mat4::look_to_lh(eye, eye - center, up)
     }
 
-    
     /// Builds a right-handed perspective projection matrix with [-1,1] depth range.
     /// This is the equivalent of the common perspective function `gluPerspective` in OpenGL.
     /// See https://www.khronos.org/opengl/wiki/GluPerspective_code
@@ -539,7 +518,6 @@ impl Mat4 {
         )
     }
 
-    
     pub fn mul_vec4(&self, other: Vec4) -> Vec4 {
         let mut res = self.x_axis * other.dup_x();
         res = self.y_axis.mul_add(other.dup_y(), res);
@@ -548,7 +526,6 @@ impl Mat4 {
         res
     }
 
-    
     /// Multiplies two 4x4 matrices.
     pub fn mul_mat4(&self, other: &Mat4) -> Mat4 {
         Mat4 {
@@ -559,7 +536,6 @@ impl Mat4 {
         }
     }
 
-    
     pub fn add_mat4(&self, other: &Mat4) -> Mat4 {
         Mat4 {
             x_axis: self.x_axis + other.x_axis,
@@ -569,7 +545,6 @@ impl Mat4 {
         }
     }
 
-    
     pub fn sub_mat4(&self, other: &Mat4) -> Mat4 {
         Mat4 {
             x_axis: self.x_axis - other.x_axis,
@@ -579,7 +554,6 @@ impl Mat4 {
         }
     }
 
-    
     pub fn mul_scalar(&self, other: f32) -> Self {
         let s = Vec4::splat(other);
         Self {
@@ -590,7 +564,6 @@ impl Mat4 {
         }
     }
 
-    
     pub fn transform_point3(&self, other: Vec3) -> Vec3 {
         let mut res = self.x_axis.truncate() * other.dup_x();
         res = self.y_axis.truncate().mul_add(other.dup_y(), res);
@@ -600,7 +573,6 @@ impl Mat4 {
         res
     }
 
-    
     pub fn transform_vector3(&self, other: Vec3) -> Vec3 {
         let mut res = self.x_axis.truncate() * other.dup_x();
         res = self.y_axis.truncate().mul_add(other.dup_y(), res);
@@ -618,7 +590,7 @@ impl Mat4 {
     ///
     /// For more on floating point comparisons see
     /// https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
-    
+
     pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
         self.x_axis.abs_diff_eq(other.x_axis, max_abs_diff)
             && self.y_axis.abs_diff_eq(other.y_axis, max_abs_diff)
@@ -626,7 +598,6 @@ impl Mat4 {
             && self.w_axis.abs_diff_eq(other.w_axis, max_abs_diff)
     }
 
-    
     pub fn to_flat_vec(&self) -> Vec<f32> {
         vec![
             self.x_axis.x(),
@@ -651,53 +622,52 @@ impl Mat4 {
 
 #[cfg(feature = "rand")]
 impl Distribution<Mat4> for Standard {
-    
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Mat4 {
         Mat4::from_cols_array(&rng.gen())
     }
 }
 
 // impl AsRef<Vec<f32>> for Mat4 {
-    // 
-    // fn as_ref(&self) -> &Vec<f32> {
-        // &vec![
-            // self.x_axis.x(),
-            // self.x_axis.y(),
-            // self.x_axis.z(),
-            // self.x_axis.w(),
-            // self.y_axis.x(),
-            // self.y_axis.y(),
-            // self.y_axis.z(),
-            // self.y_axis.w(),
-            // self.z_axis.x(),
-            // self.z_axis.y(),
-            // self.z_axis.z(),
-            // self.z_axis.w(),
-            // self.w_axis.x(),
-            // self.w_axis.y(),
-            // self.w_axis.z(),
-            // self.w_axis.w(),
-        // ]
-    // }
+//
+// fn as_ref(&self) -> &Vec<f32> {
+// &vec![
+// self.x_axis.x(),
+// self.x_axis.y(),
+// self.x_axis.z(),
+// self.x_axis.w(),
+// self.y_axis.x(),
+// self.y_axis.y(),
+// self.y_axis.z(),
+// self.y_axis.w(),
+// self.z_axis.x(),
+// self.z_axis.y(),
+// self.z_axis.z(),
+// self.z_axis.w(),
+// self.w_axis.x(),
+// self.w_axis.y(),
+// self.w_axis.z(),
+// self.w_axis.w(),
+// ]
+// }
 // }
 
 // impl AsRef<[f32; 16]> for Mat4 {
-    // 
-    // fn as_ref(&self) -> &[f32; 16] {
-        // unsafe { &*(self as *const Self as *const [f32; 16]) }
-    // }
+//
+// fn as_ref(&self) -> &[f32; 16] {
+// unsafe { &*(self as *const Self as *const [f32; 16]) }
+// }
 // }
 
 // impl AsMut<[f32; 16]> for Mat4 {
-    // 
-    // fn as_mut(&mut self) -> &mut [f32; 16] {
-        // unsafe { &mut *(self as *mut Self as *mut [f32; 16]) }
-    // }
+//
+// fn as_mut(&mut self) -> &mut [f32; 16] {
+// unsafe { &mut *(self as *mut Self as *mut [f32; 16]) }
+// }
 // }
 
 impl Add<Mat4> for Mat4 {
     type Output = Self;
-    
+
     fn add(self, other: Self) -> Self {
         self.add_mat4(&other)
     }
@@ -705,7 +675,7 @@ impl Add<Mat4> for Mat4 {
 
 impl Sub<Mat4> for Mat4 {
     type Output = Self;
-    
+
     fn sub(self, other: Self) -> Self {
         self.sub_mat4(&other)
     }
@@ -713,7 +683,7 @@ impl Sub<Mat4> for Mat4 {
 
 impl Mul<Mat4> for Mat4 {
     type Output = Self;
-    
+
     fn mul(self, other: Self) -> Self {
         self.mul_mat4(&other)
     }
@@ -721,7 +691,7 @@ impl Mul<Mat4> for Mat4 {
 
 impl Mul<Vec4> for Mat4 {
     type Output = Vec4;
-    
+
     fn mul(self, other: Vec4) -> Vec4 {
         self.mul_vec4(other)
     }
@@ -729,7 +699,7 @@ impl Mul<Vec4> for Mat4 {
 
 impl Mul<Mat4> for f32 {
     type Output = Mat4;
-    
+
     fn mul(self, other: Mat4) -> Mat4 {
         other.mul_scalar(self)
     }
@@ -737,7 +707,7 @@ impl Mul<Mat4> for f32 {
 
 impl Mul<f32> for Mat4 {
     type Output = Self;
-    
+
     fn mul(self, other: f32) -> Self {
         self.mul_scalar(other)
     }
