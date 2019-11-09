@@ -1,9 +1,12 @@
 use super::Vec4;
 
+use wasm_bindgen::prelude::*;
+
 pub fn vec4(x: f32, y: f32, z: f32, w: f32) -> Vec4 {
     Vec4::new(x, y, z, w)
 }
 
+#[wasm_bindgen]
 impl Vec4 {
     /// Returns a new `Vec4` with elements representing the sign of `self`.
     ///

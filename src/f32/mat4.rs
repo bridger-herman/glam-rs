@@ -96,8 +96,7 @@ impl Mat4 {
         }
     }
 
-    #[deprecated(since = "0.7.2", note = "please use `Mat4::from_cols` instead")]
-
+    #[wasm_bindgen(constructor)]
     pub fn new(x_axis: Vec4, y_axis: Vec4, z_axis: Vec4, w_axis: Vec4) -> Self {
         Self::from_cols(x_axis, y_axis, z_axis, w_axis)
     }

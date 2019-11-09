@@ -51,6 +51,7 @@ impl Quat {
     ///
     /// `new` is mostly used by unit tests and `serde` deserialization.
 
+    #[wasm_bindgen(constructor)]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self(Vec4::new(x, y, z, w))
     }

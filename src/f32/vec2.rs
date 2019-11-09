@@ -63,6 +63,7 @@ impl Vec2 {
     }
 
     /// Creates a new `Vec2`.
+    #[wasm_bindgen(constructor)]
     pub fn new(x: f32, y: f32) -> Vec2 {
         Vec2(x, y)
     }

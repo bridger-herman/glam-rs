@@ -120,15 +120,12 @@ and benchmarks.
 */
 #![doc(html_root_url = "https://docs.rs/glam/0.8.0")]
 
-#[macro_use]
 extern crate wasm_bindgen;
 
 #[macro_use]
 mod macros;
 
 pub mod f32;
-
-use wasm_bindgen::prelude::*;
 
 pub use self::f32::{
     mat2, mat3, mat4, quat, vec2, vec3, vec4, Mat2, Mat3, Mat4, Quat, Vec2, Vec2Mask, Vec3,

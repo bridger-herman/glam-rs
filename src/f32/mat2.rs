@@ -1,5 +1,7 @@
 use super::{scalar_sin_cos, Vec2, Vec4};
 
+use wasm_bindgen::prelude::*;
+
 #[cfg(feature = "rand")]
 use rand::{
     distributions::{Distribution, Standard},
@@ -16,6 +18,7 @@ pub fn mat2(x_axis: Vec2, y_axis: Vec2) -> Mat2 {
 }
 
 /// A 2x2 column major matrix.
+#[wasm_bindgen]
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct Mat2(pub(crate) Vec4);
 
@@ -31,6 +34,7 @@ impl fmt::Display for Mat2 {
     }
 }
 
+#[wasm_bindgen]
 impl Mat2 {
     pub fn zero() -> Self {
         Mat2(Vec4::zero())
@@ -40,8 +44,7 @@ impl Mat2 {
         Self(Vec4::new(1.0, 0.0, 0.0, 1.0))
     }
 
-    #[deprecated(since = "0.7.2", note = "please use `Mat4::from_cols` instead")]
-
+    #[wasm_bindgen(constructor)]
     pub fn new(x_axis: Vec2, y_axis: Vec2) -> Self {
         Self::from_cols(x_axis, y_axis)
     }
@@ -55,31 +58,31 @@ impl Mat2 {
     /// Creates a new `Mat2` from a `[f32; 4]` stored in column major order.
     /// If your data is stored in row major you will need to `transpose` the resulting `Mat2`.
 
-    pub fn from_cols_array(m: &[f32; 4]) -> Self {
-        Mat2(Vec4::new(m[0], m[1], m[2], m[3]))
-    }
+    // pub fn from_cols_array(m: &[f32; 4]) -> Self {
+    // Mat2(Vec4::new(m[0], m[1], m[2], m[3]))
+    // }
 
     /// Creates a new `[f32; 4]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat2` first.
 
-    pub fn to_cols_array(&self) -> [f32; 4] {
-        self.0.into()
-    }
+    // pub fn to_cols_array(&self) -> [f32; 4] {
+    // self.0.into()
+    // }
 
     /// Creates a new `Mat2` from a `[[f32; 2]; 2]` stored in column major order.
     /// If your data is in row major order you will need to `transpose` the resulting `Mat2`.
 
-    pub fn from_cols_array_2d(m: &[[f32; 2]; 2]) -> Self {
-        Mat2(Vec4::new(m[0][0], m[0][1], m[1][0], m[1][1]))
-    }
+    // pub fn from_cols_array_2d(m: &[[f32; 2]; 2]) -> Self {
+    // Mat2(Vec4::new(m[0][0], m[0][1], m[1][0], m[1][1]))
+    // }
 
     /// Creates a new `[[f32; 2]; 2]` storing data in column major order.
     /// If you require data in row major order `transpose` the `Mat2` first.
 
-    pub fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
-        let (x0, y0, x1, y1) = self.0.into();
-        [[x0, y0], [x1, y1]]
-    }
+    // pub fn to_cols_array_2d(&self) -> [[f32; 2]; 2] {
+    // let (x0, y0, x1, y1) = self.0.into();
+    // [[x0, y0], [x1, y1]]
+    // }
 
     /// Create a 2x2 matrix containing scale and rotation (in radians).
 
@@ -156,7 +159,7 @@ impl Mat2 {
         Vec2::new(x0 + x1, y0 + y1)
     }
 
-    pub fn mul_mat2(&self, other: &Self) -> Self {
+    pub fn mul_mat2(&self, other: &Mat2) -> Self {
         // TODO: SSE2
         let (x0, y0, x1, y1) = other.0.into();
         Mat2::from_cols(
@@ -165,11 +168,11 @@ impl Mat2 {
         )
     }
 
-    pub fn add_mat2(&self, other: &Self) -> Self {
+    pub fn add_mat2(&self, other: &Mat2) -> Self {
         Mat2(self.0 + other.0)
     }
 
-    pub fn sub_mat2(&self, other: &Self) -> Self {
+    pub fn sub_mat2(&self, other: &Mat2) -> Self {
         Mat2(self.0 - other.0)
     }
 

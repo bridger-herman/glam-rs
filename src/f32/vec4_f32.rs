@@ -31,6 +31,7 @@ impl Vec4 {
     }
 
     /// Creates a new `Vec4`.
+    #[wasm_bindgen(constructor)]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self(x, y, z, w)
     }

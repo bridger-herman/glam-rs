@@ -84,8 +84,7 @@ impl Mat3 {
         }
     }
 
-    #[deprecated(since = "0.7.2", note = "please use `Mat3::from_cols` instead")]
-
+    #[wasm_bindgen(constructor)]
     pub fn new(x_axis: Vec3, y_axis: Vec3, z_axis: Vec3) -> Self {
         Self::from_cols(x_axis, y_axis, z_axis)
     }

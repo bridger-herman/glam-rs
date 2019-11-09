@@ -19,6 +19,7 @@ use std::{f32, fmt, ops::*};
 #[repr(C)]
 pub struct Vec3(f32, f32, f32);
 
+#[wasm_bindgen]
 impl Vec3 {
     pub fn zero() -> Self {
         Self(0.0, 0.0, 0.0)
@@ -28,6 +29,7 @@ impl Vec3 {
         Self(1.0, 1.0, 1.0)
     }
 
+    #[wasm_bindgen(constructor)]
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Self(x, y, z)
     }
@@ -346,12 +348,14 @@ impl Distribution<Vec3> for Standard {
     }
 }
 
+#[wasm_bindgen]
 #[derive(Clone, Copy, Default)]
 // if compiling with simd enabled assume alignment needs to match the simd type
 #[cfg_attr(not(feature = "scalar-math"), repr(align(16)))]
 #[repr(C)]
 pub struct Vec3Mask(u32, u32, u32);
 
+#[wasm_bindgen]
 impl Vec3Mask {
     pub fn new(x: bool, y: bool, z: bool) -> Self {
         const MASK: [u32; 2] = [0, 0xff_ff_ff_ff];
