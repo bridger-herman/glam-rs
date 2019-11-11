@@ -275,6 +275,22 @@ impl Vec2 {
     pub fn abs(self) -> Self {
         Self(self.0.abs(), self.1.abs())
     }
+
+    // Necessary methods for JS (trait methods don't work)
+    // Don't consume self in any of these, otherwise JS can't use the value
+    // afterward
+    pub fn add(&self, other: &Vec2) -> Self {
+        *self + *other
+    }
+    pub fn sub(&self, other: &Vec2) -> Self {
+        *self - *other
+    }
+    pub fn mul(&self, other: f32) -> Self {
+        *self * other
+    }
+    pub fn to_string(&self) -> String {
+        format!("Vec2({}, {})", self.0, self.1)
+    }
 }
 
 impl fmt::Display for Vec2 {

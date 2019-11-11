@@ -68,22 +68,22 @@ impl Vec4 {
     }
 
     /// Returns element `x`.
-    pub fn x(self) -> f32 {
+    pub fn x(&self) -> f32 {
         self.0
     }
 
     /// Returns element `y`.
-    pub fn y(self) -> f32 {
+    pub fn y(&self) -> f32 {
         self.1
     }
 
     /// Returns element `z`.
-    pub fn z(self) -> f32 {
+    pub fn z(&self) -> f32 {
         self.2
     }
 
     /// Returns element `w`.
-    pub fn w(self) -> f32 {
+    pub fn w(&self) -> f32 {
         self.3
     }
 
@@ -320,6 +320,22 @@ impl Vec4 {
 
     pub fn abs(self) -> Self {
         Self(self.0.abs(), self.1.abs(), self.2.abs(), self.3.abs())
+    }
+
+    // Necessary methods for JS (trait methods don't work)
+    // Don't consume self in any of these, otherwise JS can't use the value
+    // afterward
+    pub fn add(&self, other: &Vec4) -> Self {
+        *self + *other
+    }
+    pub fn sub(&self, other: &Vec4) -> Self {
+        *self - *other
+    }
+    pub fn mul(&self, other: f32) -> Self {
+        *self * other
+    }
+    pub fn to_string(&self) -> String {
+        format!("Vec4({}, {}, {}, {})", self.0, self.1, self.2, self.3)
     }
 }
 

@@ -617,6 +617,25 @@ impl Mat4 {
             self.w_axis.w(),
         ]
     }
+
+    // Necessary methods for JS (trait methods don't work)
+    // Don't consume self in any of these, otherwise JS can't use the value
+    // afterward
+    pub fn add(&self, other: &Mat4) -> Self {
+        *self + *other
+    }
+    pub fn sub(&self, other: &Mat4) -> Self {
+        *self - *other
+    }
+    pub fn mul(&self, other: f32) -> Self {
+        *self * other
+    }
+    pub fn to_string(&self) -> String {
+        format!(
+            "Mat4(col0: {}, col1: {}, col2: {}, col3: {})",
+            self.x_axis, self.y_axis, self.z_axis, self.w_axis
+        )
+    }
 }
 
 #[cfg(feature = "rand")]

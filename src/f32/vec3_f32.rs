@@ -58,15 +58,15 @@ impl Vec3 {
         Vec2::new(self.0, self.1)
     }
 
-    pub fn x(self) -> f32 {
+    pub fn x(&self) -> f32 {
         self.0
     }
 
-    pub fn y(self) -> f32 {
+    pub fn y(&self) -> f32 {
         self.1
     }
 
-    pub fn z(self) -> f32 {
+    pub fn z(&self) -> f32 {
         self.2
     }
 
@@ -216,6 +216,22 @@ impl Vec3 {
 
     pub fn abs(self) -> Self {
         Self(self.0.abs(), self.1.abs(), self.2.abs())
+    }
+
+    // Necessary methods for JS (trait methods don't work)
+    // Don't consume self in any of these, otherwise JS can't use the value
+    // afterward
+    pub fn add(&self, other: &Vec3) -> Self {
+        *self + *other
+    }
+    pub fn sub(&self, other: &Vec3) -> Self {
+        *self - *other
+    }
+    pub fn mul(&self, other: f32) -> Self {
+        *self * other
+    }
+    pub fn to_string(&self) -> String {
+        format!("Vec3({}, {}, {})", self.0, self.1, self.2)
     }
 }
 

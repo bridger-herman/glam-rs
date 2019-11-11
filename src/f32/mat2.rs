@@ -194,6 +194,28 @@ impl Mat2 {
     pub fn abs_diff_eq(&self, other: Self, max_abs_diff: f32) -> bool {
         self.0.abs_diff_eq(other.0, max_abs_diff)
     }
+
+    // Necessary methods for JS (trait methods don't work)
+    // Don't consume self in any of these, otherwise JS can't use the value
+    // afterward
+    pub fn add(&self, other: &Mat2) -> Self {
+        *self + *other
+    }
+    pub fn sub(&self, other: &Mat2) -> Self {
+        *self - *other
+    }
+    pub fn mul(&self, other: f32) -> Self {
+        *self * other
+    }
+    pub fn to_string(&self) -> String {
+        format!(
+            "Mat2(col0: {}, {}, col1: {}, {})",
+            (self.0).x(),
+            (self.0).y(),
+            (self.0).z(),
+            (self.0).w()
+        )
+    }
 }
 
 #[cfg(feature = "rand")]

@@ -347,6 +347,25 @@ impl Mat3 {
             && self.y_axis.abs_diff_eq(other.y_axis, max_abs_diff)
             && self.z_axis.abs_diff_eq(other.z_axis, max_abs_diff)
     }
+
+    // Necessary methods for JS (trait methods don't work)
+    // Don't consume self in any of these, otherwise JS can't use the value
+    // afterward
+    pub fn add(&self, other: &Mat3) -> Self {
+        *self + *other
+    }
+    pub fn sub(&self, other: &Mat3) -> Self {
+        *self - *other
+    }
+    pub fn mul(&self, other: f32) -> Self {
+        *self * other
+    }
+    pub fn to_string(&self) -> String {
+        format!(
+            "Mat3(col0: {}, col1: {}, col2: {})",
+            self.x_axis, self.y_axis, self.z_axis
+        )
+    }
 }
 
 #[cfg(feature = "rand")]
