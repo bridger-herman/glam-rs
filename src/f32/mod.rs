@@ -16,8 +16,8 @@ mod vec4;
 mod vec4_f32;
 // #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
 // mod vec4_sse2;
-// #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-// mod x86_utils;
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+mod x86_utils;
 
 pub(crate) use funcs::{scalar_acos, scalar_sin_cos};
 pub use mat2::*;

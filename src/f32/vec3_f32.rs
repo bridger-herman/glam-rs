@@ -230,6 +230,9 @@ impl Vec3 {
     pub fn mul(&self, other: f32) -> Self {
         *self * other
     }
+    pub fn neg(&self) -> Self {
+        -(*self)
+    }
     pub fn to_string(&self) -> String {
         format!("Vec3({}, {}, {})", self.0, self.1, self.2)
     }

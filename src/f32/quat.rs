@@ -1,22 +1,3 @@
-#[cfg(all(
-    target_arch = "x86",
-    target_feature = "sse2",
-    not(feature = "scalar-math")
-))]
-use std::arch::x86::*;
-#[cfg(all(
-    target_arch = "x86_64",
-    target_feature = "sse2",
-    not(feature = "scalar-math")
-))]
-use std::arch::x86_64::*;
-
-#[cfg(feature = "rand")]
-use rand::{
-    distributions::{Distribution, Standard},
-    Rng,
-};
-
 use wasm_bindgen::prelude::*;
 
 use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec4};
@@ -305,8 +286,6 @@ impl Quat {
         other * (w * w - b2) + b * (other.dot(b) * two) + b.cross(other) * (w * two)
     }
 
-    #[cfg(any(not(target_feature = "sse2"), feature = "scalar-math"))]
-
     /// Multiplies two quaternions.
     /// Note that due to floating point rounding the result may not be perfectly normalized.
     pub fn mul_quat(self, other: Self) -> Self {
@@ -320,56 +299,6 @@ impl Quat {
             w0 * z1 + x0 * y1 - y0 * x1 + z0 * w1,
             w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1,
         )
-    }
-
-    #[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-
-    /// Multiplies two quaternions.
-    /// Note that due to floating point rounding the result may not be perfectly normalized.
-    pub fn mul_quat(self, other: Self) -> Self {
-        glam_assert!(self.is_normalized());
-        glam_assert!(other.is_normalized());
-        // sse2 implementation from RTM
-        let lhs = self.0.into();
-        let rhs = other.0.into();
-        unsafe {
-            #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-            use super::x86_utils::UnionCast;
-            const CONTROL_WZYX: UnionCast = UnionCast {
-                f32x4: [1.0, -1.0, 1.0, -1.0],
-            };
-            const CONTROL_ZWXY: UnionCast = UnionCast {
-                f32x4: [1.0, 1.0, -1.0, -1.0],
-            };
-            const CONTROL_YXWZ: UnionCast = UnionCast {
-                f32x4: [-1.0, 1.0, 1.0, -1.0],
-            };
-
-            let r_xxxx = _mm_shuffle_ps(lhs, lhs, 0b00_00_00_00);
-            let r_yyyy = _mm_shuffle_ps(lhs, lhs, 0b01_01_01_01);
-            let r_zzzz = _mm_shuffle_ps(lhs, lhs, 0b10_10_10_10);
-            let r_wwww = _mm_shuffle_ps(lhs, lhs, 0b11_11_11_11);
-
-            let lxrw_lyrw_lzrw_lwrw = _mm_mul_ps(r_wwww, rhs);
-            let l_wzyx = _mm_shuffle_ps(rhs, rhs, 0b00_01_10_11);
-
-            let lwrx_lzrx_lyrx_lxrx = _mm_mul_ps(r_xxxx, l_wzyx);
-            let l_zwxy = _mm_shuffle_ps(l_wzyx, l_wzyx, 0b10_11_00_01);
-
-            let lwrx_nlzrx_lyrx_nlxrx = _mm_mul_ps(lwrx_lzrx_lyrx_lxrx, CONTROL_WZYX.m128);
-
-            let lzry_lwry_lxry_lyry = _mm_mul_ps(r_yyyy, l_zwxy);
-            let l_yxwz = _mm_shuffle_ps(l_zwxy, l_zwxy, 0b00_01_10_11);
-
-            let lzry_lwry_nlxry_nlyry = _mm_mul_ps(lzry_lwry_lxry_lyry, CONTROL_ZWXY.m128);
-
-            let lyrz_lxrz_lwrz_lzrz = _mm_mul_ps(r_zzzz, l_yxwz);
-            let result0 = _mm_add_ps(lxrw_lyrw_lzrw_lwrw, lwrx_nlzrx_lyrx_nlxrx);
-
-            let nlyrz_lxrz_lwrz_wlzrz = _mm_mul_ps(lyrz_lxrz_lwrz_lzrz, CONTROL_YXWZ.m128);
-            let result1 = _mm_add_ps(lzry_lwry_nlxry_nlyry, nlyrz_lxrz_lwrz_wlzrz);
-            Self(Vec4(_mm_add_ps(result0, result1)))
-        }
     }
 }
 
@@ -499,22 +428,5 @@ impl Distribution<Quat> for Standard {
         let pitch = -PI + rng.gen::<f32>() * 2.0 * PI;
         let roll = -PI + rng.gen::<f32>() * 2.0 * PI;
         Quat::from_rotation_ypr(yaw, pitch, roll)
-    }
-}
-
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl From<Quat> for __m128 {
-    // TODO: write test
-    #[cfg_attr(tarpaulin, skip)]
-
-    fn from(q: Quat) -> Self {
-        (q.0).0
-    }
-}
-
-#[cfg(all(target_feature = "sse2", not(feature = "scalar-math")))]
-impl From<__m128> for Quat {
-    fn from(t: __m128) -> Self {
-        Self(Vec4(t))
     }
 }
