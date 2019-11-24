@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 
 use super::{scalar_acos, scalar_sin_cos, Mat3, Mat4, Vec3, Vec4};
 use std::{
+    f32::consts,
     cmp::Ordering,
     fmt,
     ops::{Mul, MulAssign, Neg},
@@ -173,6 +174,40 @@ impl Quat {
             mat.y_axis().truncate(),
             mat.z_axis().truncate(),
         )
+    }
+
+    /// Inspired from
+    /// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+    pub fn to_ypr(self) -> Vec3 {
+        let q0 = self.0.x();
+        let q1 = self.0.y();
+        let q2 = self.0.z();
+        let q3 = self.0.w();
+
+        // Calculate roll (x axis)
+        let sinr_cosp = 2.0 * (q3 * q0 + q1 * q2);
+        let cosr_cosp = 1.0 - 2.0 * (q0 * q0 + q1 * q1);
+        let roll = sinr_cosp.atan2(cosr_cosp);
+
+        // Calculate pitch (z axis)
+        let sinp = 2.0 * (q3 * q1 - q3 * q0);
+        let pitch;
+        if sinp.abs() >= 1.0 {
+            if sinp > 0.0 {
+                pitch = consts::FRAC_PI_2;
+            } else {
+                pitch = -consts::FRAC_PI_2;
+            }
+        } else {
+            pitch = sinp.asin();
+        }
+
+        // Calculate yaw (y axis rotation)
+        let siny_cosp = 2.0 * (q3 * q2 + q0 * q1);
+        let cosy_cosp = 1.0 - 2.0 * (q1 * q1 + q2 * q2);
+        let yaw = siny_cosp.atan2(cosy_cosp);
+
+        Vec3::new(yaw, pitch, roll)
     }
 
     //
