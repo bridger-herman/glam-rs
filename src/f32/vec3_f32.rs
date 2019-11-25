@@ -360,6 +360,12 @@ impl From<Vec3> for [f32; 3] {
     }
 }
 
+impl From<Vec3> for Vec<f32> {
+    fn from(v: Vec3) -> Vec<f32> {
+        vec![v.0, v.1, v.2]
+    }
+}
+
 #[cfg(feature = "rand")]
 impl Distribution<Vec3> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Vec3 {
